@@ -1,0 +1,9 @@
+#!/bin/bash -xeu
+
+source director-state/director.env
+
+: ${SCENARIO:?}
+
+pushd e2e/tasks/e2e-tests/scenarios/$SCENARIO
+  ./deploy
+popd
