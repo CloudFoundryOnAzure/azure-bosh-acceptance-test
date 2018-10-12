@@ -114,6 +114,9 @@ jobs:
         - <<: *run-e2e
           params:
             SCENARIO: vm-resources
+        - <<: *run-e2e
+          params:
+            SCENARIO: application-security-groups
       - do:
         - <<: *teardown
         - <<: *destroy-e2e-environment
@@ -152,6 +155,9 @@ jobs:
         - <<: *run-e2e
           params:
             SCENARIO: vm-resources
+        - <<: *run-e2e
+          params:
+            SCENARIO: application-security-groups
       - do:
         - <<: *teardown
         - <<: *destroy-e2e-environment

@@ -3,11 +3,14 @@
 source pipelines/shared/utils.sh
 source director-state/director.env
 
+scenarios=$(ls e2e/scenarios)
+ops_file=""
+for scenario in $scenarios
+do
+  ops_file+="-o e2e/scenarios/$scenario/cloud-config.yml "
+done
 bosh -n update-cloud-config e2e/manifests/base-cloud-config.yml \
-  -o e2e/scenarios/default-storage-account/cloud-config.yml \
-  -o e2e/scenarios/multiple-storage-accounts/cloud-config.yml \
-  -o e2e/scenarios/managed-disks/cloud-config.yml \
-  -o e2e/scenarios/vm-resources/cloud-config.yml \
+  ${ops_file} \
   -l <( pipelines/azure/assets/director-vars )
 
 bosh -n upload-stemcell $(echo stemcell/*.tgz)
