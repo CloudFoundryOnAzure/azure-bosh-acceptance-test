@@ -4,10 +4,10 @@ source pipelines/shared/utils.sh
 source director-state/director.env
 
 bosh -n update-cloud-config e2e/manifests/base-cloud-config.yml \
-  -o e2e/tasks/e2e-tests/scenarios/default-storage-account/cloud-config.yml \
-  -o e2e/tasks/e2e-tests/scenarios/multiple-storage-accounts/cloud-config.yml \
-  -o e2e/tasks/e2e-tests/scenarios/managed-disks/cloud-config.yml \
-  -o e2e/tasks/e2e-tests/scenarios/vm-resources/cloud-config.yml \
+  -o e2e/scenarios/default-storage-account/cloud-config.yml \
+  -o e2e/scenarios/multiple-storage-accounts/cloud-config.yml \
+  -o e2e/scenarios/managed-disks/cloud-config.yml \
+  -o e2e/scenarios/vm-resources/cloud-config.yml \
   -l <( pipelines/azure/assets/director-vars )
 
 bosh -n upload-stemcell $(echo stemcell/*.tgz)

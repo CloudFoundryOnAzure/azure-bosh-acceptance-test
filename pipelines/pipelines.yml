@@ -35,7 +35,14 @@ shared:
     file: pipelines/shared/tasks/prepare-director.yml
     params: &prepare-director-params
       INFRASTRUCTURE:     azure
-      DIRECTOR_VARS_FILE: {{azure_director_vars_file}}
+      DIRECTOR_VARS_FILE:
+        environment:     {{azure_environment}}
+        tenant_id:       {{azure_tenant_id}}
+        subscription_id: {{azure_subscription_id}}
+        client_id:       {{azure_client_id}}
+        client_secret:   {{azure_client_secret}}
+        location:        {{azure_location}}
+        dns_recursor_ip: 168.63.129.16
 
   - &deploy-director
     task: deploy-director
@@ -94,6 +101,7 @@ jobs:
             OPTIONAL_OPS_FILE: |
               -o pipelines/shared/assets/ops/remove-hm.yml
               -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+              -o bosh-deployment/azure/custom-environment.yml
               -o bosh-deployment/azure/use-location.yml
         - do:
           - <<: *deploy-director
@@ -138,8 +146,9 @@ jobs:
             OPTIONAL_OPS_FILE: |
               -o pipelines/shared/assets/ops/remove-hm.yml
               -o bosh-deployment/external-ip-with-registry-not-recommended.yml
-              -o bosh-deployment/azure/use-managed-disks.yml
+              -o bosh-deployment/azure/custom-environment.yml
               -o bosh-deployment/azure/use-location.yml
+              -o bosh-deployment/azure/use-managed-disks.yml
         - do:
           - <<: *deploy-director
           - <<: *update-cloud-config
@@ -212,12 +221,12 @@ resources:
         container_name:       {{environment_container_name}}
         environment:          {{terraform_backend_config_environment}}
       vars:
-        location:              {{azure_location}}
         azure_environment:     {{azure_environment}}
         azure_subscription_id: {{azure_subscription_id}}
         azure_client_id:       {{azure_client_id}}
         azure_client_secret:   {{azure_client_secret}}
         azure_tenant_id:       {{azure_tenant_id}}
+        location:              {{azure_location}}
         resource_group_prefix: {{resource_group_prefix}}
   - name: bosh-cli
     type: s3

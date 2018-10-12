@@ -4,6 +4,6 @@ source director-state/director.env
 
 : ${SCENARIO:?}
 
-pushd e2e/tasks/e2e-tests/scenarios/$SCENARIO
+pushd e2e/scenarios/$SCENARIO
   ./deploy
 popd
