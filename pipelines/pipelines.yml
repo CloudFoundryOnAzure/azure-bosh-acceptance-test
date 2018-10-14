@@ -94,37 +94,32 @@ jobs:
         - {get: bosh-cli,        trigger: false}
         - {get: e2e,             trigger: false}
       - <<: *create-e2e-environment
-      - do:
-        - <<: *prepare-director
+      - <<: *prepare-director
+        params:
+          <<: *prepare-director-params
+          OPTIONAL_OPS_FILE: |
+            -o pipelines/shared/assets/ops/remove-hm.yml
+            -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+            -o bosh-deployment/azure/custom-environment.yml
+            -o bosh-deployment/azure/use-location.yml
+      - <<: *deploy-director
+      - <<: *update-cloud-config
+      - aggregate:
+        - <<: *run-e2e
           params:
-            <<: *prepare-director-params
-            OPTIONAL_OPS_FILE: |
-              -o pipelines/shared/assets/ops/remove-hm.yml
-              -o bosh-deployment/external-ip-with-registry-not-recommended.yml
-              -o bosh-deployment/azure/custom-environment.yml
-              -o bosh-deployment/azure/use-location.yml
-        - do:
-          - <<: *deploy-director
-          - <<: *update-cloud-config
-          - aggregate:
-            - <<: *run-e2e
-              params:
-                SCENARIO: default-storage-account
-            - <<: *run-e2e
-              params:
-                SCENARIO: multiple-storage-accounts
-            - <<: *run-e2e
-              params:
-                SCENARIO: vm-resources
-          ensure:
-            do:
-              - <<: *teardown
+            SCENARIO: default-storage-account
+        - <<: *run-e2e
+          params:
+            SCENARIO: multiple-storage-accounts
+        - <<: *run-e2e
+          params:
+            SCENARIO: vm-resources
+      - do:
+        - <<: *teardown
+        - <<: *destroy-e2e-environment
         ensure:
           do:
-            - <<: *destroy-e2e-environment
-          ensure:
-            do:
-              - <<: *ensure-cleanup
+            - <<: *ensure-cleanup
 
   - name: e2e-managed-disks
     serial: true
@@ -139,35 +134,30 @@ jobs:
         - {get: bosh-cli,        trigger: false}
         - {get: e2e,             trigger: false}
       - <<: *create-e2e-environment
-      - do:
-        - <<: *prepare-director
+      - <<: *prepare-director
+        params:
+          <<: *prepare-director-params
+          OPTIONAL_OPS_FILE: |
+            -o pipelines/shared/assets/ops/remove-hm.yml
+            -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+            -o bosh-deployment/azure/custom-environment.yml
+            -o bosh-deployment/azure/use-location.yml
+            -o bosh-deployment/azure/use-managed-disks.yml
+      - <<: *deploy-director
+      - <<: *update-cloud-config
+      - aggregate:
+        - <<: *run-e2e
           params:
-            <<: *prepare-director-params
-            OPTIONAL_OPS_FILE: |
-              -o pipelines/shared/assets/ops/remove-hm.yml
-              -o bosh-deployment/external-ip-with-registry-not-recommended.yml
-              -o bosh-deployment/azure/custom-environment.yml
-              -o bosh-deployment/azure/use-location.yml
-              -o bosh-deployment/azure/use-managed-disks.yml
-        - do:
-          - <<: *deploy-director
-          - <<: *update-cloud-config
-          - aggregate:
-            - <<: *run-e2e
-              params:
-                SCENARIO: managed-disks
-            - <<: *run-e2e
-              params:
-                SCENARIO: vm-resources
-          ensure:
-            do:
-              - <<: *teardown
+            SCENARIO: managed-disks
+        - <<: *run-e2e
+          params:
+            SCENARIO: vm-resources
+      - do:
+        - <<: *teardown
+        - <<: *destroy-e2e-environment
         ensure:
           do:
-            - <<: *destroy-e2e-environment
-          ensure:
-            do:
-              - <<: *ensure-cleanup
+            - <<: *ensure-cleanup
 
 resource_types:
   - name: terraform_type
