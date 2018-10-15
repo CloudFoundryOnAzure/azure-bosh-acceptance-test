@@ -1,0 +1,10 @@
+#!/bin/bash -xeu
+
+scenario="load-balancer"
+echo "Creating an instance with a basic load balancer"
+sku="basic"
+bosh -n -d $scenario deploy ./deployment.yml -v scenario=$scenario -v sku=$sku
+echo "Upgrading an instance to use a standard load balancer"
+sku="standard"
+bosh -n -d $scenario deploy ./deployment.yml -v scenario=$scenario -v sku=$sku
+bosh -n -d $scenario delete-deployment
