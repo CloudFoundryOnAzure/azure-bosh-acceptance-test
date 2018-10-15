@@ -56,6 +56,18 @@ shared:
     task: run-e2e
     file: e2e/tasks/e2e-tests/task.yml
 
+  - &run-e2e-common-cases
+    aggregate:
+      - <<: *run-e2e
+        params:
+          SCENARIO: vm-resources
+      - <<: *run-e2e
+        params:
+          SCENARIO: application-security-groups
+      - <<: *run-e2e
+        params:
+          SCENARIO: load-balancer
+
   - &teardown
     task: teardown
     file: pipelines/shared/tasks/teardown.yml
@@ -112,15 +124,7 @@ jobs:
         - <<: *run-e2e
           params:
             SCENARIO: multiple-storage-accounts
-        - <<: *run-e2e
-          params:
-            SCENARIO: vm-resources
-        - <<: *run-e2e
-          params:
-            SCENARIO: application-security-groups
-        - <<: *run-e2e
-          params:
-            SCENARIO: load-balancer
+        - <<: *run-e2e-common-cases
       - do:
         - <<: *teardown
         - <<: *destroy-e2e-environment
@@ -156,15 +160,7 @@ jobs:
         - <<: *run-e2e
           params:
             SCENARIO: managed-disks
-        - <<: *run-e2e
-          params:
-            SCENARIO: vm-resources
-        - <<: *run-e2e
-          params:
-            SCENARIO: application-security-groups
-        - <<: *run-e2e
-          params:
-            SCENARIO: load-balancer
+        - <<: *run-e2e-common-cases
       - do:
         - <<: *teardown
         - <<: *destroy-e2e-environment
