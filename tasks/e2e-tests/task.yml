@@ -16,3 +16,4 @@ run:
 
 params:
   SCENARIO:
+  COUNT:    1

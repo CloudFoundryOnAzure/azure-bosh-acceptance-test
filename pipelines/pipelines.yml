@@ -108,6 +108,7 @@ jobs:
         - <<: *run-e2e
           params:
             SCENARIO: default-storage-account
+            COUNT: 2
         - <<: *run-e2e
           params:
             SCENARIO: multiple-storage-accounts

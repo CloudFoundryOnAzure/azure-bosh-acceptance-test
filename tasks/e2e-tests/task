@@ -3,7 +3,14 @@
 source director-state/director.env
 
 : ${SCENARIO:?}
+: ${COUNT:?}
 
 pushd e2e/scenarios/$SCENARIO
-  ./deploy
+  counter=1
+  while [ $counter -le $COUNT ]
+  do
+    echo "Testing the scenario $SCENARIO; times: $counter ..."
+    ./deploy
+    let counter=counter+1
+  done
 popd
