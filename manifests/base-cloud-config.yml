@@ -46,8 +46,6 @@ networks:
       virtual_network_name: ((vnet_name))
       subnet_name: ((subnet_name))
       security_group: ((default_security_group))
-- name: vip
-  type: vip
 
 vm_types:
 - name: minimal

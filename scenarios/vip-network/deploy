@@ -1,0 +1,8 @@
+#!/bin/bash -xeu
+
+director_vars_path=$1
+scenario=$(basename "$PWD")
+bosh -n -d $scenario deploy ./deployment.yml \
+  -v scenario=$scenario \
+  -l <( ${director_vars_path} )
+bosh -n -d $scenario delete-deployment

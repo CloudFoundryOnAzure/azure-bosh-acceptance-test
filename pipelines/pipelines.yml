@@ -60,6 +60,15 @@ shared:
     aggregate:
       - <<: *run-e2e
         params:
+          SCENARIO: manual-network
+      - <<: *run-e2e
+        params:
+          SCENARIO: dynamic-network
+      - <<: *run-e2e
+        params:
+          SCENARIO: vip-network
+      - <<: *run-e2e
+        params:
           SCENARIO: vm-resources
       - <<: *run-e2e
         params:

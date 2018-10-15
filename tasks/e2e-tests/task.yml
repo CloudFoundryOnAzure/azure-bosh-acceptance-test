@@ -10,6 +10,8 @@ inputs:
 - name: e2e
 - name: bosh-cli
 - name: director-state
+- name: pipelines
+- name: environment
 
 run:
   path: e2e/tasks/e2e-tests/task
