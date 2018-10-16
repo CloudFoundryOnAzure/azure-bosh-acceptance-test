@@ -75,10 +75,13 @@ shared:
           SCENARIO: vm-resources
       - <<: *run-e2e
         params:
-          SCENARIO: application-security-groups
+          SCENARIO: load-balancer
       - <<: *run-e2e
         params:
-          SCENARIO: load-balancer
+          SCENARIO: availability-sets
+      - <<: *run-e2e
+        params:
+          SCENARIO: application-security-groups
 
   - &teardown
     task: teardown
