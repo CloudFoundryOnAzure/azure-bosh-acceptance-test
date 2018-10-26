@@ -5,6 +5,7 @@ groups:
       - build-candidate
       - e2e-unmanaged-disks
       - e2e-managed-disks
+      - e2e-user-assigned-managed-identity
 
 shared:
   - &azure-environment-params
@@ -30,19 +31,54 @@ shared:
     get_params:
       action: destroy
 
-  - &prepare-director
+  - &director-vars-file
+    DIRECTOR_VARS_FILE:
+      environment:     {{azure_environment}}
+      subscription_id: {{azure_subscription_id}}
+      tenant_id:       {{azure_tenant_id}}
+      client_id:       {{azure_client_id}}
+      client_secret:   {{azure_client_secret}}
+      location:        {{azure_location}}
+      dns_recursor_ip: 168.63.129.16
+
+  - &prepare-director-unmanaged
     task: prepare-director
     file: pipelines/shared/tasks/prepare-director.yml
-    params: &prepare-director-params
+    params:
       INFRASTRUCTURE:     azure
-      DIRECTOR_VARS_FILE:
-        environment:     {{azure_environment}}
-        tenant_id:       {{azure_tenant_id}}
-        subscription_id: {{azure_subscription_id}}
-        client_id:       {{azure_client_id}}
-        client_secret:   {{azure_client_secret}}
-        location:        {{azure_location}}
-        dns_recursor_ip: 168.63.129.16
+      OPTIONAL_OPS_FILE: |
+        -o pipelines/shared/assets/ops/remove-hm.yml
+        -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+        -o bosh-deployment/azure/custom-environment.yml
+        -o bosh-deployment/azure/use-location.yml
+      <<: *director-vars-file
+
+  - &prepare-director-managed
+    task: prepare-director
+    file: pipelines/shared/tasks/prepare-director.yml
+    params:
+      INFRASTRUCTURE:     azure
+      OPTIONAL_OPS_FILE: |
+        -o pipelines/shared/assets/ops/remove-hm.yml
+        -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+        -o bosh-deployment/azure/custom-environment.yml
+        -o bosh-deployment/azure/use-location.yml
+        -o bosh-deployment/azure/use-managed-disks.yml
+      <<: *director-vars-file
+
+  - &prepare-director-with-user-assigned-managed-identity
+    task: prepare-director
+    file: pipelines/shared/tasks/prepare-director.yml
+    params:
+      INFRASTRUCTURE:     azure
+      OPTIONAL_OPS_FILE: |
+        -o pipelines/shared/assets/ops/remove-hm.yml
+        -o bosh-deployment/external-ip-with-registry-not-recommended.yml
+        -o bosh-deployment/azure/custom-environment.yml
+        -o bosh-deployment/azure/use-location.yml
+        -o bosh-deployment/azure/use-managed-disks.yml
+        -o bosh-deployment/azure/use-user-assigned-managed-identity.yml
+      <<: *director-vars-file
 
   - &deploy-director
     task: deploy-director
@@ -121,31 +157,26 @@ jobs:
         - {get: bosh-cli,        trigger: false}
         - {get: e2e,             trigger: false}
       - <<: *create-e2e-environment
-      - <<: *prepare-director
-        params:
-          <<: *prepare-director-params
-          OPTIONAL_OPS_FILE: |
-            -o pipelines/shared/assets/ops/remove-hm.yml
-            -o bosh-deployment/external-ip-with-registry-not-recommended.yml
-            -o bosh-deployment/azure/custom-environment.yml
-            -o bosh-deployment/azure/use-location.yml
-      - <<: *deploy-director
-      - <<: *update-cloud-config
-      - aggregate:
-        - <<: *run-e2e
-          params:
-            SCENARIO: default-storage-account
-            COUNT: 2
-        - <<: *run-e2e
-          params:
-            SCENARIO: multiple-storage-accounts
-        - <<: *run-e2e-common-cases
+      - <<: *prepare-director-unmanaged
       - do:
-        - <<: *teardown
-        - <<: *destroy-e2e-environment
+        - <<: *deploy-director
+        - <<: *update-cloud-config
+        - aggregate:
+          - <<: *run-e2e
+            params:
+              SCENARIO: default-storage-account
+              COUNT: 2
+          - <<: *run-e2e
+            params:
+              SCENARIO: multiple-storage-accounts
+          - <<: *run-e2e-common-cases
         ensure:
           do:
-            - <<: *ensure-cleanup
+            - <<: *teardown
+            - <<: *destroy-e2e-environment
+          ensure:
+            do:
+              - <<: *ensure-cleanup
 
   - name: e2e-managed-disks
     serial: true
@@ -160,28 +191,52 @@ jobs:
         - {get: bosh-cli,        trigger: false}
         - {get: e2e,             trigger: false}
       - <<: *create-e2e-environment
-      - <<: *prepare-director
-        params:
-          <<: *prepare-director-params
-          OPTIONAL_OPS_FILE: |
-            -o pipelines/shared/assets/ops/remove-hm.yml
-            -o bosh-deployment/external-ip-with-registry-not-recommended.yml
-            -o bosh-deployment/azure/custom-environment.yml
-            -o bosh-deployment/azure/use-location.yml
-            -o bosh-deployment/azure/use-managed-disks.yml
-      - <<: *deploy-director
-      - <<: *update-cloud-config
-      - aggregate:
-        - <<: *run-e2e
-          params:
-            SCENARIO: managed-disks
-        - <<: *run-e2e-common-cases
+      - <<: *prepare-director-managed
       - do:
-        - <<: *teardown
-        - <<: *destroy-e2e-environment
+        - <<: *deploy-director
+        - <<: *update-cloud-config
+        - aggregate:
+          - <<: *run-e2e
+            params:
+              SCENARIO: managed-disks
+          - <<: *run-e2e-common-cases
         ensure:
           do:
-            - <<: *ensure-cleanup
+            - <<: *teardown
+            - <<: *destroy-e2e-environment
+          ensure:
+            do:
+              - <<: *ensure-cleanup
+
+  - name: e2e-user-assigned-managed-identity
+    serial: true
+    plan:
+      - aggregate:
+        - {get: cpi-release,     trigger: true,  resource: bosh-cpi-dev-artifacts, passed: [build-candidate]}
+        - {get: bosh-release,    trigger: false, resource: bosh-release}
+        - {get: bosh-cpi-src,    trigger: false, resource: bosh-cpi-src-in,        passed: [build-candidate]}
+        - {get: stemcell,        trigger: false, resource: azure-ubuntu-stemcell}
+        - {get: bosh-deployment, trigger: false}
+        - {get: pipelines,       trigger: false}
+        - {get: bosh-cli,        trigger: false}
+        - {get: e2e,             trigger: false}
+      - <<: *create-e2e-environment
+      - <<: *prepare-director-with-user-assigned-managed-identity
+      - do:
+        - <<: *deploy-director
+        - <<: *update-cloud-config
+        - aggregate:
+          - <<: *run-e2e
+            params:
+              SCENARIO: managed-identity
+          - <<: *run-e2e-common-cases
+        ensure:
+          do:
+            - <<: *teardown
+            - <<: *destroy-e2e-environment
+          ensure:
+            do:
+              - <<: *ensure-cleanup
 
 resource_types:
   - name: terraform_type
@@ -251,7 +306,7 @@ resources:
   - name: pipelines
     type: git
     source:
-      uri: https://github.com/cloudfoundry-incubator/bosh-cpi-certification
+      uri: https://github.com/CloudFoundryOnAzure/bosh-cpi-certification
       branch: master
   - name: bosh-release
     type: bosh-io-release
