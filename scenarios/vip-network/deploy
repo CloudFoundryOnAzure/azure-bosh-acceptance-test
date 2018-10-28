@@ -1,8 +1,11 @@
 #!/bin/bash -xeu
 
-director_vars_path=$1
-scenario=$(basename "$PWD")
-bosh -n -d $scenario deploy ./deployment.yml \
+scenario=$1
+scenario_path=$2
+director_vars_path=$(realpath pipelines/azure/assets/director-vars)
+
+bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
   -v scenario=$scenario \
   -l <( ${director_vars_path} )
+
 bosh -n -d $scenario delete-deployment

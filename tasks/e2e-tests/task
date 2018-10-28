@@ -5,13 +5,11 @@ source director-state/director.env
 : ${SCENARIO:?}
 : ${COUNT:?}
 
-director_vars_path=$(realpath pipelines/azure/assets/director-vars)
-pushd e2e/scenarios/$SCENARIO
-  counter=1
-  while [ $counter -le $COUNT ]
-  do
-    echo "Testing the scenario $SCENARIO; times: $counter ..."
-    ./deploy ${director_vars_path}
-    let counter=counter+1
-  done
-popd
+counter=1
+while [ $counter -le $COUNT ]
+do
+  echo "Testing the scenario $SCENARIO; times: $counter ..."
+  scenario_path="e2e/scenarios/$SCENARIO"
+  ${scenario_path}/deploy $SCENARIO ${scenario_path}
+  let counter=counter+1
+done

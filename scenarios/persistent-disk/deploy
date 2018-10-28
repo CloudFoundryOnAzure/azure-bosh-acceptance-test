@@ -1,10 +1,16 @@
 #!/bin/bash -xeu
 
-scenario=$(basename "$PWD")
-bosh -n -d $scenario deploy ./deployment.yml \
+scenario=$1
+scenario_path=$2
+
+echo "Deploying an instance with 1GB persistent disk"
+bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
   -v scenario=$scenario \
   -v disk_type=1GB
-bosh -n -d $scenario deploy ./deployment.yml \
+
+echo "Deploying an instance with 4TB persistent disk"
+bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
   -v scenario=$scenario \
   -v disk_type=4TB
+
 bosh -n -d $scenario delete-deployment
