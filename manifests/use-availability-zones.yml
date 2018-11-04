@@ -1,0 +1,13 @@
+---
+- type: replace
+  path: /azs/name=z1/cloud_properties?
+  value:
+    availability_zone: "1"
+- type: replace
+  path: /azs/name=z2/cloud_properties?
+  value:
+    availability_zone: "2"
+- type: replace
+  path: /azs/name=z3/cloud_properties?
+  value:
+    availability_zone: "3"

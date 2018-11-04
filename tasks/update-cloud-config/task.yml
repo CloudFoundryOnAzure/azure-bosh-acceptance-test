@@ -16,3 +16,6 @@ inputs:
 
 run:
   path: e2e/tasks/update-cloud-config/task
+
+params:
+  AVAILABILITY_ZONES: false

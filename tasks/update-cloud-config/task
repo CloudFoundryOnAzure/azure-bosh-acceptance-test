@@ -1,5 +1,7 @@
 #!/bin/bash -xeu
 
+: ${AVAILABILITY_ZONES:?}
+
 source pipelines/shared/utils.sh
 source director-state/director.env
 
@@ -9,6 +11,9 @@ for scenario in $scenarios
 do
   ops_file+="-o e2e/scenarios/$scenario/cloud-config.yml "
 done
+if [ "${AVAILABILITY_ZONES}" == "true" ]; then
+  ops_file+="-o e2e/manifests/use-availability-zones.yml "
+fi
 bosh -n update-cloud-config e2e/manifests/base-cloud-config.yml \
   ${ops_file} \
   -l <( pipelines/azure/assets/director-vars )
