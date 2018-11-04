@@ -118,6 +118,9 @@ shared:
       - <<: *run-e2e
         params:
           SCENARIO: application-security-groups
+      - <<: *run-e2e
+        params:
+          SCENARIO: vm-strategy
 
   - &teardown
     task: teardown
