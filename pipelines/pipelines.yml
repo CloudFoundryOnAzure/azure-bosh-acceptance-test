@@ -122,6 +122,9 @@ shared:
       - <<: *run-e2e
         params:
           SCENARIO: dynamic-public-ip
+      - <<: *run-e2e
+        params:
+          SCENARIO: ip-forwarding
 
   - &teardown
     task: teardown

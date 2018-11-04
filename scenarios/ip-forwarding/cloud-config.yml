@@ -1,0 +1,22 @@
+---
+- type: replace
+  path: /networks/-
+  value:
+    name: ip-forwarding
+    type: manual
+    subnets:
+    - range: 10.0.15.0/24
+      gateway: 10.0.15.1
+      azs: [z1, z2, z3]
+      dns: [168.63.129.16, 8.8.8.8]
+      reserved: [10.0.15.0/30]
+      cloud_properties:
+        security_group: ((default_security_group))
+        virtual_network_name: ((vnet_name))
+        subnet_name: subnet-15
+- type: replace
+  path: /vm_extensions/-
+  value:
+    name: ip-forwarding
+    cloud_properties:
+      ip_forwarding: true

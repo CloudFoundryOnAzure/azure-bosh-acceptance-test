@@ -1,0 +1,9 @@
+#!/bin/bash -xeu
+
+scenario=$1
+scenario_path=$2
+
+bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+  -v scenario=$scenario
+
+bosh -n -d $scenario delete-deployment
