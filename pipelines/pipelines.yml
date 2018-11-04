@@ -109,9 +109,6 @@ shared:
           SCENARIO: persistent-disk
       - <<: *run-e2e
         params:
-          SCENARIO: load-balancer
-      - <<: *run-e2e
-        params:
           SCENARIO: vm-resources
       - <<: *run-e2e
         params:
@@ -121,10 +118,16 @@ shared:
           SCENARIO: application-security-groups
       - <<: *run-e2e
         params:
-          SCENARIO: dynamic-public-ip
+          SCENARIO: ip-forwarding
       - <<: *run-e2e
         params:
-          SCENARIO: ip-forwarding
+          SCENARIO: accelerated-networking
+      - <<: *run-e2e
+        params:
+          SCENARIO: load-balancer
+      - <<: *run-e2e
+        params:
+          SCENARIO: dynamic-public-ip
 
   - &teardown
     task: teardown
