@@ -4,12 +4,14 @@ scenario=$1
 scenario_path=$2
 
 echo "Deploying an instance with 1GB persistent disk"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -v disk_type=1GB
 
 echo "Deploying an instance with 4TB persistent disk"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -v disk_type=4TB
 

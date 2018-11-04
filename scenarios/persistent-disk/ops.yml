@@ -1,0 +1,4 @@
+---
+- type: replace
+  path: /instance_groups/name=nginx/persistent_disk_type
+  value: ((disk_type))

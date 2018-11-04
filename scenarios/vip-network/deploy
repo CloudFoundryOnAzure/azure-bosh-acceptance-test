@@ -4,7 +4,8 @@ scenario=$1
 scenario_path=$2
 director_vars_path=$(realpath pipelines/azure/assets/director-vars)
 
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -l <( ${director_vars_path} )
 

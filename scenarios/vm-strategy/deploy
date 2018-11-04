@@ -3,11 +3,9 @@
 scenario=$1
 scenario_path=$2
 
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
-  -v scenario=$scenario \
-  -v vm_type=minimal
-
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+# Update a VM with the vm_strategy: create-swap-delete
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -v vm_type=small
 

@@ -5,13 +5,15 @@ scenario_path=$2
 
 echo "Creating an instance with a basic load balancer"
 sku="basic"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -v sku=$sku
 
 echo "Upgrading an instance to use a standard load balancer"
 sku="standard"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
   -v sku=$sku
 

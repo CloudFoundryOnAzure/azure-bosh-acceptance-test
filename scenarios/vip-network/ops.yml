@@ -1,0 +1,8 @@
+---
+- type: replace
+  path: /instance_groups/name=nginx/networks
+  value:
+    - name: default-network-for-vip-network
+      default: [dns, gateway]
+    - name: ((scenario))
+      static_ips: [((vip_address))]

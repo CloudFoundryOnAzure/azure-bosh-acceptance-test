@@ -4,16 +4,16 @@ scenario=$1
 scenario_path=$2
 
 echo "Deploying an instance with default managed identity"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -v scenario=$scenario
 
 echo "Deploying an instance with system assigned managed identity in vm_extensions"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -v scenario=$scenario \
   -o ${scenario_path}/use-system-assigned-managed-identity.yml
 
 echo "Deploying an instance with user assigned managed identity in vm_extensions"
-bosh -n -d $scenario deploy ${scenario_path}/deployment.yml \
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -v scenario=$scenario \
   -o ${scenario_path}/use-user-assigned-managed-identity.yml
 
