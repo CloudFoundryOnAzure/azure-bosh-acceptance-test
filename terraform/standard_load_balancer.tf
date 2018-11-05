@@ -68,6 +68,20 @@ resource "azurerm_lb_rule" "standard-lb-http-rule" {
   probe_id                = "${azurerm_lb_probe.standard-lb-http-probe.id}"
 }
 
+resource "azurerm_lb_rule" "standard-lb-udp-rule" {
+  name                = "standard-lb-udp-rule"
+  resource_group_name = "${azurerm_resource_group.bosh_resource_group.name}"
+  loadbalancer_id     = "${azurerm_lb.standard-lb.id}"
+
+  frontend_ip_configuration_name = "frontendip"
+  protocol                       = "UDP"
+  frontend_port                  = 123
+  backend_port                   = 123
+
+  backend_address_pool_id = "${azurerm_lb_backend_address_pool.standard-lb-backend-pool.id}"
+  probe_id                = "${azurerm_lb_probe.standard-lb-http-probe.id}"
+}
+
 output "standard_lb_name" {
   value = "${azurerm_lb.standard-lb.name}"
 }
