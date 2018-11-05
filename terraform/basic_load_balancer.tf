@@ -3,14 +3,14 @@ resource "azurerm_public_ip" "basic-lb-public-ip" {
   location                     = "${var.location}"
   resource_group_name          = "${azurerm_resource_group.bosh_resource_group.name}"
   public_ip_address_allocation = "static"
-  sku                          = "Standard"
+  sku                          = "Basic"
 }
 
 resource "azurerm_lb" "basic-lb" {
   name                = "${var.env_name}-basic-lb"
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.bosh_resource_group.name}"
-  sku                 = "Standard"
+  sku                 = "Basic"
 
   frontend_ip_configuration = {
     name                 = "frontendip"
