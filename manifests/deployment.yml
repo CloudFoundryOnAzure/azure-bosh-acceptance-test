@@ -9,7 +9,7 @@ update:
 instance_groups:
 - name: nginx
   instances: 1
-  azs: [ z1 ]
+  azs: [ z1, z2, z3 ]
   vm_type: D1v2
   persistent_disk_type: default
   stemcell: default
