@@ -10,7 +10,7 @@ instance_groups:
 - name: nginx
   instances: 1
   azs: [ z1 ]
-  vm_type: minimal
+  vm_type: D1v2
   persistent_disk_type: default
   stemcell: default
   networks:

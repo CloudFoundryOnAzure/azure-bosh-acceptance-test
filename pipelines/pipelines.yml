@@ -214,6 +214,9 @@ jobs:
               SCENARIO: managed-disks
           - <<: *run-e2e
             params:
+              SCENARIO: persistent-disk-managed
+          - <<: *run-e2e
+            params:
               SCENARIO: availability-sets
           - <<: *run-e2e-common-cases
         ensure:

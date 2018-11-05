@@ -7,6 +7,6 @@ scenario_path=$2
 bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
-  -v vm_type=small
+  -v vm_type=D2v2
 
 bosh -n -d $scenario delete-deployment

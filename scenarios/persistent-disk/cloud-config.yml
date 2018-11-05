@@ -14,3 +14,14 @@
         security_group: ((default_security_group))
         virtual_network_name: ((vnet_name))
         subnet_name: subnet-9
+- type: replace
+  path: /disk_types/-
+  value:
+    - name: 1GBReadOnly
+      disk_size: 1024
+      cloud_properties:
+        caching: ReadOnly
+    - name: 1GBReadWrite
+      disk_size: 1024
+      cloud_properties:
+        caching: ReadWrite

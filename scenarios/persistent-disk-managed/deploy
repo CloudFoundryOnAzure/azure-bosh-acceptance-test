@@ -3,28 +3,25 @@
 scenario=$1
 scenario_path=$2
 
-echo "Case: size 1GB, caching None"
+echo "Case: size 1GB, type StandardLRS"
 bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
-  -v disk_type=1GB
+  -v vm_type=D1v2 \
+  -v disk_type=1GBStandardLRS
 
-echo "Case: size 1GB, caching ReadOnly"
+echo "Case: size 1GB, type StandardSSDLRS"
 bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
-  -v disk_type=1GBReadOnly
+  -v vm_type=D1v2 \
+  -v disk_type=1GBStandardSSDLRS
 
-echo "Case: size 1GB, caching ReadWrite"
+echo "Case: size 1GB, type PremiumLRS"
 bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -o ${scenario_path}/ops.yml \
   -v scenario=$scenario \
-  -v disk_type=1GBReadWrite
-
-echo "Case: size 4GB, caching None"
-bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
-  -o ${scenario_path}/ops.yml \
-  -v scenario=$scenario \
-  -v disk_type=4TB
+  -v vm_type=DS1v2 \
+  -v disk_type=1GBPremiumLRS
 
 bosh -n -d $scenario delete-deployment
