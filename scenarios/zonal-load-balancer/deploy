@@ -1,0 +1,12 @@
+#!/bin/bash -xeu
+
+scenario=$1
+scenario_path=$2
+
+sku="standard"
+bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
+  -o ${scenario_path}/ops.yml \
+  -v scenario=$scenario \
+  -v sku=$sku
+
+bosh -n -d $scenario delete-deployment
