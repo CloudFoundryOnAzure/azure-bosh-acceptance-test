@@ -7,4 +7,29 @@ bosh -n -d $scenario deploy e2e/manifests/deployment.yml \
   -o ${scenario_path}/ops.yml \
   -v scenario=$scenario
 
+IFS=';' read -r -a vm_cid <<< $(bosh -d $scenario vms --json | jq -r '.Tables[0].Rows[0].vm_cid')
+
+vm_name=""
+rg_name=""
+for element in "${vm_cid[@]}"
+do
+  IFS=':' read -r -a pairs <<< "$element"
+  case ${pairs[0]} in
+    agent_id)
+      vm_name=${pairs[1]}
+      ;;
+    resource_group_name)
+      rg_name=${pairs[1]}
+      ;;
+  esac
+done
+nic_name="${vm_name}-0"
+
+enable_accelerated_networking=$(az network nic show --name ${vm_name} --resource-group ${rg_name} | jq -r '.enableAcceleratedNetworking')
+
 bosh -n -d $scenario delete-deployment
+
+if [ ${enable_accelerated_networking} == "false"]
+then
+  exit 1
+fi

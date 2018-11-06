@@ -17,5 +17,10 @@ run:
   path: e2e/tasks/e2e-tests/task
 
 params:
+  AZURE_ENVIRONMENT:     ""
+  AZURE_TENANT_ID:       ""
+  AZURE_SUBSCRIPTION_ID: ""
+  AZURE_CLIENT_ID:       ""
+  AZURE_CLIENT_SECRET:   ""
   SCENARIO:
-  COUNT:    1
+  COUNT:                 1

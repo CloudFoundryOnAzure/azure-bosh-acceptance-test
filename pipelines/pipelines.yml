@@ -97,33 +97,43 @@ shared:
     aggregate:
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: manual-network
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: dynamic-network
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: vip-network
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: persistent-disk
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: vm-resources
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: vm-strategy
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: application-security-groups
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: ip-forwarding
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: accelerated-networking
       - <<: *run-e2e
         params:
+          <<: *azure-environment-params
           SCENARIO: dynamic-public-ip
 
   - &teardown
@@ -171,16 +181,20 @@ jobs:
         - aggregate:
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: default-storage-account
               COUNT: 2
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: availability-sets
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: multiple-storage-accounts
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: regional-load-balancer
           - <<: *run-e2e-common-cases
         ensure:
@@ -211,15 +225,19 @@ jobs:
         - aggregate:
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: managed-disks
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: persistent-disk-managed
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: availability-sets
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: regional-load-balancer
           - <<: *run-e2e-common-cases
         ensure:
@@ -252,9 +270,11 @@ jobs:
         - aggregate:
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: managed-disks
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: zonal-load-balancer
           - <<: *run-e2e-common-cases
         ensure:
@@ -285,9 +305,11 @@ jobs:
         - aggregate:
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: managed-identity
           - <<: *run-e2e
             params:
+              <<: *azure-environment-params
               SCENARIO: regional-load-balancer
           - <<: *run-e2e-common-cases
         ensure:
