@@ -25,7 +25,7 @@ do
 done
 nic_name="${vm_name}-0"
 
-enable_accelerated_networking=$(az network nic show --name ${vm_name} --resource-group ${rg_name} | jq -r '.enableAcceleratedNetworking')
+enable_accelerated_networking=$(az network nic show --name ${nic_name} --resource-group ${rg_name} | jq -r '.enableAcceleratedNetworking')
 
 bosh -n -d $scenario delete-deployment
 
